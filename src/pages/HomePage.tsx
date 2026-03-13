@@ -108,7 +108,7 @@ export default function HomePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              Coracle Collections
+              Assorted Collections
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
               Explore trending listings, newest homes, verified listers, and best-value deals.

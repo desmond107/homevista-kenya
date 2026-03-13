@@ -71,7 +71,7 @@ export default function PopupAdvert() {
                   onClick={() => setIsOpen(false)}
                   className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold px-6 py-3 rounded-lg hover:shadow-lg transition-all w-fit"
                 >
-                  Publish Advert
+                  Visit
                 </a>
 
                 {/* Dots Navigation */}

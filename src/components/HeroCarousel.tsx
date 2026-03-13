@@ -92,7 +92,7 @@ export default function HeroCarousel() {
           className="text-center text-white mb-8"
         >
           <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-            Animated Property Coracle
+            Keja Fiti Bei Fiti
             <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-4">

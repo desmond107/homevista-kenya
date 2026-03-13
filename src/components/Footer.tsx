@@ -47,7 +47,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-white mb-4">Support</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-amber-500 transition-colors">About Us</a></li>
+              <li><a href="#" className="hover:text-amber-500 transition-colors">About Us:</a>0713905761</li>
               <li><a href="#" className="hover:text-amber-500 transition-colors">Contact Us</a></li>
               <li><a href="#" className="hover:text-amber-500 transition-colors">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-amber-500 transition-colors">Terms & Conditions</a></li>
