@@ -6,7 +6,7 @@
 -- ============================================================
 
 -- First promote your user to admin:
--- UPDATE public.profiles SET role = 'admin' WHERE id = 'YOUR_ADMIN_UUID';
+UPDATE public.profiles SET role = 'admin' WHERE id = '43206640-1e1b-4466-92a0-38866cc02606';
 
 INSERT INTO public.properties
   (title, description, price, price_type, category, listing_type, location, address,
