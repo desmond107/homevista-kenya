@@ -43,7 +43,7 @@ export default function Navbar() {
               <div className="w-10 h-10 bg-linear-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
                 <FiHome className="text-2xl" />
               </div>
-              <span className="text-xl font-bold">HomeVista Kenya</span>
+              <span className="text-xl font-bold">HomeVista Ke</span>
             </Link>
 
             {/* Desktop Navigation */}

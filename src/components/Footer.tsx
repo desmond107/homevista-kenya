@@ -16,7 +16,7 @@ export default function Footer() {
               <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
                 <FiHome className="text-xl text-white" />
               </div>
-              <span className="text-xl font-bold text-white">HomeVista Kenya</span>
+              <span className="text-xl font-bold text-white">HomeVista Ke</span>
             </div>
             <p className="text-sm">
               Your trusted platform for buying, selling, and renting properties across Kenya.
@@ -65,7 +65,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           {/* Copyright */}
           <p className="text-sm">
-            &copy; 2026 HomeVista Kenya. All rights reserved. | Kenya's Premier Real Estate Platform
+            &copy; 2026 HomeVista Ke. All rights reserved. | Kenya's Premier Real Estate Platform
           </p>
 
           {/* Social Links */}
