@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiMail, FiLock, FiUser } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
-import { useStore } from '../store/useStore';
 import toast from 'react-hot-toast';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { useStore } from '../store/useStore';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,49 +17,100 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [accountType, setAccountType] = useState<'viewer' | 'lister'>('viewer');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login, addUser } = useStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
+  const handleMockAuth = () => {
     const user = {
       id: `user_${Date.now()}`,
       name: name || email.split('@')[0],
       email,
-      avatar: `https://ui-avatars.com/api/?name=${name || email}&background=random`,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name || email)}&background=f59e0b&color=fff`,
       role: accountType,
       createdAt: new Date().toISOString(),
       isPremium: false,
       isVerifiedLister: false,
     };
-
     login(user);
     addUser(user);
     toast.success(isLogin ? 'Logged in successfully!' : 'Account created successfully!');
     onClose();
   };
 
-  const handleGoogleAuth = () => {
-    const user = {
-      id: `user_${Date.now()}`,
-      name: 'Google User',
-      email: 'user@gmail.com',
-      avatar: 'https://ui-avatars.com/api/?name=Google+User&background=random',
-      role: accountType,
-      createdAt: new Date().toISOString(),
-      isPremium: false,
-      isVerifiedLister: false,
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
 
-    login(user);
-    addUser(user);
-    toast.success(accountType === 'viewer' ? 'Viewer account connected via Google!' : 'Lister account connected via Google!');
-    onClose();
+    // Dev fallback: no Supabase configured
+    if (!isSupabaseConfigured) {
+      handleMockAuth();
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        // App.tsx onAuthStateChange handles setting user in store
+        toast.success('Logged in successfully!');
+        onClose();
+      } else {
+        if (!name.trim()) {
+          toast.error('Please enter your full name');
+          return;
+        }
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name: name.trim(),
+              role: accountType,
+              avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name.trim())}&background=f59e0b&color=fff`,
+            },
+          },
+        });
+        if (error) throw error;
+        toast.success('Account created! Check your email to confirm your address.');
+        onClose();
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Authentication failed';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    if (!isSupabaseConfigured) {
+      const user = {
+        id: `user_${Date.now()}`,
+        name: 'Google User',
+        email: 'user@gmail.com',
+        avatar: 'https://ui-avatars.com/api/?name=Google+User&background=f59e0b&color=fff',
+        role: accountType,
+        createdAt: new Date().toISOString(),
+        isPremium: false,
+        isVerifiedLister: false,
+      };
+      login(user);
+      addUser(user);
+      toast.success('Connected via Google!');
+      onClose();
+      return;
+    }
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { queryParams: { prompt: 'select_account' } },
+    });
+    if (error) toast.error(error.message);
+    // Redirect handled by Supabase; onAuthStateChange fires on return
   };
 
   return (
@@ -173,9 +225,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold py-2 rounded-lg hover:shadow-lg transition-all"
+                  disabled={isSubmitting}
+                  className="w-full bg-linear-to-r from-amber-500 to-orange-600 text-white font-semibold py-2 rounded-lg hover:shadow-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {isLogin ? 'Login' : 'Create Account'}
+                  {isSubmitting ? 'Please wait…' : isLogin ? 'Login' : 'Create Account'}
                 </button>
               </form>
 

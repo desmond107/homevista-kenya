@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
@@ -11,8 +12,47 @@ import EditPropertyPage from './pages/EditPropertyPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminPage from './pages/AdminPage';
 import RealtorsPage from './pages/RealtorsPage';
+import { supabase, isSupabaseConfigured } from './lib/supabase';
+import { fetchProfile } from './lib/db';
+import { useStore } from './store/useStore';
 
 function App() {
+  const { login, logout, loadUserData, loadAdminData, initialize } = useStore();
+
+  useEffect(() => {
+    // Load public data (properties, adverts, realtors, categories)
+    initialize();
+
+    if (!isSupabaseConfigured) return;
+
+    // Restore existing session on page load
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return;
+      const profile = await fetchProfile(session.user.id);
+      if (!profile) return;
+      login(profile);
+      await loadUserData(session.user.id);
+      if (profile.role === 'admin') await loadAdminData();
+    });
+
+    // Keep auth state in sync with Supabase session changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          const profile = await fetchProfile(session.user.id);
+          if (!profile) return;
+          login(profile);
+          await loadUserData(session.user.id);
+          if (profile.role === 'admin') await loadAdminData();
+        } else if (event === 'SIGNED_OUT') {
+          logout();
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <Router>
       <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -31,7 +71,7 @@ function App() {
         </main>
         <Footer />
         <PopupAdvert />
-        <Toaster 
+        <Toaster
           position="top-right"
           toastOptions={{
             style: {

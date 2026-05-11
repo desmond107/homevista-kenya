@@ -12,7 +12,6 @@ export default function DashboardPage() {
   const { user, isAuthenticated, properties, deleteProperty, logout } = useStore();
   const [activeTab, setActiveTab] = useState('properties');
   const [showVerifyModal, setShowVerifyModal] = useState(false);
-  const [showVerificationForm, setShowVerificationForm] = useState(false);
 
   if (!isAuthenticated) {
     return (
@@ -112,7 +111,7 @@ export default function DashboardPage() {
                     </p>
                   ) : (
                     <button
-                      onClick={() => { setShowVerifyModal(true); setShowVerificationForm(true); }}
+                      onClick={() => setShowVerifyModal(true)}
                       className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-amber-600"
                     >
                       <FiShield />

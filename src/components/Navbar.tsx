@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiUser, FiLogOut, FiHome, FiPlus, FiSettings, FiDollarSign } from 'react-icons/fi';
 import { useStore } from '../store/useStore';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
 export default function Navbar() {
@@ -21,9 +22,14 @@ export default function Navbar() {
     setExchangeRate(value);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
     setShowUserMenu(false);
+    if (isSupabaseConfigured) {
+      await supabase.auth.signOut();
+      // onAuthStateChange in App.tsx calls logout() on the store
+    } else {
+      logout();
+    }
     navigate('/');
   };
 
@@ -34,7 +40,7 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-linear-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
                 <FiHome className="text-2xl" />
               </div>
               <span className="text-xl font-bold">HomeVista Kenya</span>
