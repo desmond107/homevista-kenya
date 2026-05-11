@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiHome, FiFacebook, FiInstagram, FiTwitter, FiLinkedin } from 'react-icons/fi';
 
 export default function Footer() {
+  const [showCredit, setShowCredit] = useState(false);
+
   return (
-    <footer className="bg-slate-900 text-slate-300">
+    <footer className="bg-slate-900 text-slate-300 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Grid */}
         <div className="grid md:grid-cols-4 gap-8 mb-12">
@@ -81,6 +84,22 @@ export default function Footer() {
             </a>
           </div>
         </div>
+      </div>
+
+      {/* DK Credit Button */}
+      <div className="absolute bottom-4 right-4 flex items-center gap-2">
+        {showCredit && (
+          <span className="text-xs text-amber-400 bg-slate-800 border border-slate-600 rounded-full px-3 py-1 whitespace-nowrap">
+            Made by Desmond Kinoti
+          </span>
+        )}
+        <button
+          onClick={() => setShowCredit(!showCredit)}
+          className="w-6 h-6 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-600 text-[9px] font-bold flex items-center justify-center transition-colors"
+          title="Made by Desmond Kinoti"
+        >
+          DK
+        </button>
       </div>
     </footer>
   );

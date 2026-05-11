@@ -3,7 +3,6 @@ import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PopupAdvert from './components/PopupAdvert';
-import WhatsAppButton from './components/WhatsAppButton';
 import HomePage from './pages/HomePage';
 import PropertiesPage from './pages/PropertiesPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
@@ -32,7 +31,6 @@ function App() {
         </main>
         <Footer />
         <PopupAdvert />
-        <WhatsAppButton />
         <Toaster 
           position="top-right"
           toastOptions={{
